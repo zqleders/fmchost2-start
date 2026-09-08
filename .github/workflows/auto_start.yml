@@ -1,0 +1,44 @@
+name: Server Auto Start Workflow
+
+on:
+  workflow_dispatch:
+#  schedule:
+#    - cron: '0 */6 * * *'  # 每 6 小时自动运行一次
+
+jobs:
+  run-automation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          sbase install geckodriver
+          sbase install chromedriver
+
+      - name: Setup Display Environment (Xvfb)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+          Xvfb :99 -screen 0 1920x1080x24 &
+          echo "DISPLAY=:99" >> $GITHUB_ENV
+
+      - name: Run Script
+        env:
+          LOGIN_URL: ${{ secrets.LOGIN_URL }}
+          SERVER_URL: ${{ secrets.SERVER_URL }}
+          LOGIN_USERNAME: ${{ secrets.LOGIN_USERNAME }}
+          LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+        run: |
+          python main.py
