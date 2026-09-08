@@ -91,8 +91,8 @@ def run():
         print("[CRITICAL] 缺少必要的环境变量，请确保 GitHub Secrets 配置完整。")
         sys.exit(1)
 
-    # 启动 SeleniumBase UC 模式（无头模式 + 伪装真实浏览器）
-    with SB(uc=True, headless=True) as sb:
+    # 启动 SeleniumBase UC 模式（关闭无头模式，利用 Xvfb 虚拟显示器执行物理点击）
+    with SB(uc=True, headless=False) as sb:
         print("[INFO] 🚀 启动浏览器，准备打开登录页面...")
         sb.uc_open_with_reconnect(LOGIN_URL, reconnect_time=6)
         sb.sleep(3)
