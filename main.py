@@ -20,8 +20,8 @@ def send_tg_notification(message: str, image_path: str = None):
         print("[WARN] 未配置 Telegram Bot Token 或 Chat ID，跳过 Telegram 推送。")
         return
 
-    # 统一增加 [Fcmhost1] 标识前缀
-    formatted_message = f"[Fcmhost1] {message}"
+    # 统一增加 [Fcmhost2] 标识前缀
+    formatted_message = f"[Fcmhost2] {message}"
 
     async def _send():
         bot = Bot(token=TG_BOT_TOKEN)
