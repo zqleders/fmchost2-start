@@ -20,9 +20,12 @@ def send_tg_notification(message: str, image_path: str = None):
         print("[WARN] 未配置 Telegram Bot Token 或 Chat ID，跳过 Telegram 推送。")
         return
 
+    # 统一增加 [Fcmhost1] 标识前缀
+    formatted_message = f"[Fcmhost1] {message}"
+
     async def _send():
         bot = Bot(token=TG_BOT_TOKEN)
-        await bot.send_message(chat_id=TG_CHAT_ID, text=message)
+        await bot.send_message(chat_id=TG_CHAT_ID, text=formatted_message)
         if image_path and os.path.exists(image_path):
             with open(image_path, "rb") as photo:
                 await bot.send_photo(chat_id=TG_CHAT_ID, photo=photo)
@@ -91,7 +94,7 @@ def run():
         print("[CRITICAL] 缺少必要的环境变量，请确保 GitHub Secrets 配置完整。")
         sys.exit(1)
 
-    # 启动 SeleniumBase UC 模式（关闭无头模式，利用 Xvfb 虚拟显示器执行物理点击）
+    # 启动 SeleniumBase UC 模式（已关闭 headless，结合 Actions 的 Xvfb 进行物理点击）
     with SB(uc=True, headless=False) as sb:
         print("[INFO] 🚀 启动浏览器，准备打开登录页面...")
         sb.uc_open_with_reconnect(LOGIN_URL, reconnect_time=6)
